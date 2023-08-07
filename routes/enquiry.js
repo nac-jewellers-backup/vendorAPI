@@ -1,5 +1,4 @@
-'use strict'
-const bcrypt = require('bcryptjs');
+'use strict';
 const AWS = require('aws-sdk');
 AWS.config.region = 'us-east-2';
 const dynamodb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
@@ -61,7 +60,8 @@ async function getEnquiryData(data) {
 async function setEnquiryData(data) {
     try {
         const { session, enquiry } = data;
-        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); };
+        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); }
+        const {type}=enquiry;
         const response = (type === 'add') ? await saveEnquiry(enquiry) : await updateEnquiry(enquiry);
         if (!response) { return utilService.buildResponse(200, { status: 'failure', message: (type === 'add') ? 'Error in adding enquiry' : 'Error in editing enquiry' }); }
         return utilService.buildResponse(200, { status: 'success', message: (type === 'add') ? 'Enquiry record added sucessfully' : 'Enquiry record edited sucessfully' });
@@ -74,7 +74,7 @@ async function setEnquiryData(data) {
 async function deleteEnquiryData(data) {
     try {
         const { session, id } = data;
-        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); };
+        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); }
         const params = { TableName: enquiryTable, Key: { id: id }, ReturnValues: 'ALL_OLD' };
         await dynamodb.delete(params).promise();
         return utilService.buildResponse(200, { status: 'success', message: 'Enquiry record deleted sucessfully' });
@@ -93,7 +93,7 @@ async function saveEnquiry(data) {
                 return false;
             } else {
                 console.log("Success", data);
-                return true
+                return true;
             }
         });
         return response;
@@ -124,7 +124,7 @@ async function updateEnquiry(data) {
                 return false;
             } else {
                 console.log("Success", data);
-                return true
+                return true;
             }
         });
         console.log(response);

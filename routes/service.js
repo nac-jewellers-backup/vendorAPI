@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const AWS = require('aws-sdk');
 AWS.config.region = 'us-east-2';
 const dynamodb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
@@ -44,10 +44,10 @@ async function getServiceData(data) {
 async function setServiceData(data) {
     try {
         const { session, service } = data;
-        if (jwtservice.verify(session) === false) { return utilservice.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); };
+        if (jwtservice.verify(session) === false) { return utilservice.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); }
         const checkInfo = await checkServiceName(service);
-        if (checkInfo === 'error') { return utilservice.buildResponse(503, { status: 'error', message: 'Server Error. Please try again later' }); };
-        if (checkInfo !== 'success') { return utilservice.buildResponse(202, { status: 'failure', message: checkInfo }); };
+        if (checkInfo === 'error') { return utilservice.buildResponse(503, { status: 'error', message: 'Server Error. Please try again later' }); }
+        if (checkInfo !== 'success') { return utilservice.buildResponse(202, { status: 'failure', message: checkInfo }); }
         const { type } = service;
         const response = (type === 'add') ? await saveService(service) : await updateService(service);
         if (!response) { return utilservice.buildResponse(200, { status: 'failure', message: (type === 'add') ? 'Error in adding enquiry' : 'Error in editing service' }); }
@@ -79,7 +79,7 @@ async function checkServiceName(data) {
 async function deleteServiceData(data) {
     try {
         const { session, id } = data;
-        if (jwtservice.verify(session) === false) { return utilservice.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); };
+        if (jwtservice.verify(session) === false) { return utilservice.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); }
         const params = { TableName: serviceTable, Key: { id: id }, ReturnValues: 'ALL_OLD' };
         await dynamodb.delete(params).promise();
         return utilservice.buildResponse(200, { status: 'success', message: 'Service record deleted sucessfully' });
@@ -99,7 +99,7 @@ async function saveService(data) {
                 return false;
             } else {
                 console.log("Success", data);
-                return true
+                return true;
             }
         });
         return response;
@@ -129,7 +129,7 @@ async function updateService(data) {
                 return false;
             } else {
                 console.log("Success", data);
-                return true
+                return true;
             }
         });
         console.log(response);

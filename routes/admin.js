@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const bcrypt = require('bcryptjs');
 const AWS = require('aws-sdk');
 AWS.config.region = 'us-east-2';
@@ -55,11 +55,11 @@ async function getAdminData(data) {
 async function setAdminData(data) {
     try {
         const { session, admin } = data;
-        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); };
+        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); }
         const { id, name, mobile, email, password, role, status, createdOn, type } = admin;
         const checkInfo = await checkAdminDetails({ id, email, mobile, type });
-        if (checkInfo === 'error') { return utilService.buildResponse(503, { status: 'error', message: 'Server Error. Please try again later' }); };
-        if (checkInfo !== 'success') { return utilService.buildResponse(202, { status: 'failure', message: checkInfo }); };
+        if (checkInfo === 'error') { return utilService.buildResponse(503, { status: 'error', message: 'Server Error. Please try again later' }); }
+        if (checkInfo !== 'success') { return utilService.buildResponse(202, { status: 'failure', message: checkInfo }); }
         const encryptedPWD = bcrypt.hashSync(password.trim(), 10);
         const adminDetails = { id: id, name: name.trim(), mobile_number: mobile.trim(), email: email.trim(), password: encryptedPWD, admin_role: role, job_status: status, createdOn: createdOn };
         const response = (type === 'add') ? await saveAdmin(adminDetails) : await updateAdmin(adminDetails);
@@ -74,7 +74,7 @@ async function setAdminData(data) {
 async function deleteAdminData(data) {
     try {
         const { session, id } = data;
-        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); };
+        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); }
         const params = { TableName: adminTable, Key: { id: id }, ReturnValues: 'ALL_OLD' };
         await dynamodb.delete(params).promise();
         return utilService.buildResponse(200, { status: 'success', message: 'Admin record deleted sucessfully' });
@@ -113,7 +113,7 @@ async function saveAdmin(data) {
                 return false;
             } else {
                 console.log("Success", data);
-                return true
+                return true;
             }
         });
         return response;
@@ -144,7 +144,7 @@ async function updateAdmin(data) {
                 return false;
             } else {
                 console.log("Success", data);
-                return true
+                return true;
             }
         });
         console.log(response);

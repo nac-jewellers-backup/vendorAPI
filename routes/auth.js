@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const axios = require('axios');
 const bcrypt = require('bcryptjs');
 const AWS = require('aws-sdk');
@@ -48,11 +48,11 @@ async function verify(data) {
         const { tableName, mobile_number } = data;
         const dynamoUser = await getUser({ tableName, mobile_number });
         if (!dynamoUser || !dynamoUser.mobile_number) { return utilService.buildResponse(401, { status: "failed", message: "User not found" }); }
-        const otp = parseInt(Math.floor(1000 + Math.random() * 9000));
-        const msg_txt = `Dear ${dynamoUser.name}, Please use this OTP ${otp} to reset the password.`
+        const otp = parseInt(Math.floor(1000 + Math.random() * 9000), 10);
+        const msg_txt = `Dear ${dynamoUser.name}, Please use this OTP ${otp} to reset the password.`;
         const response = await axios.post('https://staging.stylori.com/nac_api/send_sms', { sender_id: 'NACJWL', mobile_no: mobile_number, msg_txt });
         const { status } = response;
-        if (status !== 200) { return util.buildResponse(401, { status: "failed", message: "Error in sending OTP" }); }
+        if (status !== 200) { return utilService.buildResponse(401, { status: "failed", message: "Error in sending OTP" }); }
         return utilService.buildResponse(200, { status: "success", message: "User found", data: { id: dynamoUser.id, name: dynamoUser.name, mobile_number: dynamoUser.mobile_number, otp: otp } });
     } catch (error) {
         console.log(error);

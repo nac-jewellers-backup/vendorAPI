@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const utilService = require('./routes/util');
 const authService = require('./routes/auth');
 const adminService = require('./routes/admin');

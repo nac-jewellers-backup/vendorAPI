@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const bcrypt = require('bcryptjs');
 const AWS = require('aws-sdk');
 AWS.config.region = 'us-east-2';
@@ -73,11 +73,11 @@ async function getVendorData(data) {
 async function setVendorData(data) {
     try {
         const { session, vendor } = data;
-        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); };
+        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); }
         const { id, vendor_name, shop_mobile, vendor_pass, shop_address, category, email, contact_number, contact_person, pan, gst_number, fax, vendor_status, created_date, created_by, modified_date, modified_by, type } = vendor;
         const checkInfo = await checkVendorDetails({ id, email, shop_mobile, type });
-        if (checkInfo === 'error') { return utilService.buildResponse(503, { status: 'error', message: 'Server Error. Please try again later' }); };
-        if (checkInfo !== 'success') { return utilService.buildResponse(202, { status: 'failure', message: checkInfo }); };
+        if (checkInfo === 'error') { return utilService.buildResponse(503, { status: 'error', message: 'Server Error. Please try again later' }); }
+        if (checkInfo !== 'success') { return utilService.buildResponse(202, { status: 'failure', message: checkInfo }); }
         const encryptedPWD = bcrypt.hashSync(vendor_pass.trim(), 10);
         const vendorDetails = {
             id: id,
@@ -110,7 +110,7 @@ async function setVendorData(data) {
 async function deleteVendorData(data) {
     try {
         const { session, id } = data;
-        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); };
+        if (jwtService.verify(session) === false) { return utilService.buildResponse(403, { status: 'failure', message: 'Unauthorized' }); }
         const params = { TableName: vendorTable, Key: { id: id }, ReturnValues: 'ALL_OLD' };
         await dynamodb.delete(params).promise();
         return utilService.buildResponse(200, { status: 'success', message: 'Vendor record deleted sucessfully' });
@@ -149,7 +149,7 @@ async function saveVendor(data) {
                 return false;
             } else {
                 console.log("Success", data);
-                return true
+                return true;
             }
         });
         return response;
@@ -181,7 +181,7 @@ async function updateVendor(data) {
                 return false;
             } else {
                 console.log("Success", data);
-                return true
+                return true;
             }
         });
         console.log(response);
